@@ -58,7 +58,7 @@ def dropPiece(board, row, col, turn):
     board[row][col] = turn+1;
 
 def getNextOpenRow(board, col):
-    for r in range(ROW_COUNT-1):
+    for r in range(ROW_COUNT):
         if board[r][col]== 0:
             return r
 
@@ -68,6 +68,34 @@ def makeMove(board, col, turn):
 
 def printBoard(board):
     print(np.flip(board,0))
+
+def checkWin(board, turn):
+    player = turn
+
+    # Check for horizontal wins
+    for c in range(COLUMN_COUNT-3):
+        for r in range(ROW_COUNT):
+            if (board[r][c] == player and board[r][c+1] == player and board[r][c+2] == player and board[r][c+3] == player):
+                return True
+
+    # Check for vertical wins
+    for c in range(COLUMN_COUNT):
+        for r in range(ROW_COUNT-3):
+            if (board[r][c] == player and board[r+1][c] == player and board[r+2][c] == player and board[r+3][c] == player):
+                return True
+
+    # Positive slope diagonals
+    for c in range(COLUMN_COUNT-3):
+        for r in range(ROW_COUNT-3):
+            if (board[r][c] == player and board[r+1][c+1] == player and board[r+2][c+2] == player and board[r+3][c+3] == player):
+                return True
+
+    # Negative slope diagonals
+    for c in range(COLUMN_COUNT):
+        for r in range(ROW_COUNT):
+            if (board[r][c] == player and board[r - 1][c + 1] == player and board[r - 2][c + 2] == player and
+                        board[r - 3][c + 3] == player):
+                return True
 
 
 turn = 0
@@ -84,14 +112,13 @@ while not game_over:
         if isValidLocation(board, col):
             makeMove(board, col, turn)
 
-
-
-
-
-
+        if checkWin(board, 1):
+            print("You win!!!")
+            game_over = True
 
         printBoard(board)
         turn = player2
+        
     #Get player 2 input
     else:
         col = getInput(turn)
@@ -99,4 +126,9 @@ while not game_over:
         if isValidLocation(board, col):
             makeMove(board, col, turn)
 
+        if checkWin(board, 2):
+            print("You win!!!")
+            game_over = True
+
+        printBoard(board)
         turn = player1
