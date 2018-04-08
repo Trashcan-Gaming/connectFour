@@ -10,14 +10,14 @@ class Chromosone:
 
     def __init__(self):
         self.fitness = 0
-        self.IHWeights = np.zeros(self.noInputs,self.noHidden)
-        self.HOWeights = np.zeros(self.noHidden,self.noOutput)
+        self.IHWeights = np.zeros((self.noInputs, self.noHidden))
+        self.HOWeights = np.zeros((self.noHidden,self.noOutput))
 
     def __init__(self, firstRun):
         if firstRun:
             self.fitness = 0
-            self.IHWeights = np.zeros(self.noInputs, self.noHidden)
-            self.HOWeights = np.zeros(self.noHidden, self.noOutput)
+            self.IHWeights = np.zeros((self.noInputs, self.noHidden))
+            self.HOWeights = np.zeros((self.noHidden, self.noOutput))
 
             for i in range(self.noInputs):
                 for j in range(self.noHidden):

@@ -1,5 +1,6 @@
 from Chromosone import Chromosone as c
 from StoredNetClass import StoredNetClass as snc
+from ConnectFourTraining import ConnectFourTraining as cft
 import numpy as np
 import random as r
 import math
@@ -8,26 +9,29 @@ class NeuralNetwork:
 
 
     def __init__(self):
-        self.IHWeights = np.zeros(c.noInputs,c.noHidden)
-        self.HOWeights = np.zeros(c.noHidden,c.noInputs)
+        self.IHWeights = np.zeros((c.noInputs,c.noHidden))
+        self.HOWeights = np.zeros((c.noHidden,c.noInputs))
+        self.game = cft()
 
     def setWeightsOfNN(self, inputIHWeights, inputHOWeights):
         self.IHWeights = inputIHWeights
         self.HOWeights = inputHOWeights
 
-    def getNextMove(self, inputs):
+    def getNextMove(self, inputs, board):
         highestActual = 0
         toOutput = 0
 
+        self.game.setBoard(board)
+
         for i in range(c.noOutput):
-            actual = self.calculateHiddenAndOutput(inputs).storedOutputNets[i]
-            if(actual> highestActual):
+            actual = self.calculateHiddenAndOuput(inputs).storedOutputNets[i]
+            if(actual > highestActual and self.game.isValidLocation(self.game.board, col=i)):
                 highestActual = actual
                 toOutput = i
 
         return toOutput
 
-    def setWeightsOfNN(self):
+    def initWeights(self):
         #Give initial weights of NN
 
         for i in range(c.noInputs):
@@ -49,19 +53,17 @@ class NeuralNetwork:
                 for i in range(c.noInputs):
                     hiddenNet = hiddenNet + (self.IHWeights[i][j] * inputPattern[i])
 
-                if j ==(c.noHidden -1):
-                    hiddenFNets[j] = -1.0
+                if j ==(c.noHidden-1):
+                    hiddenFNets.append(-1.0)
                 else:
-                    hiddenFNets[j] = self.getActivationFunctionValue(hiddenNet, "sig")
+                    hiddenFNets.append(self.getActivationFunctionValue(hiddenNet, "sig"))
 
                 outputNet = outputNet + (self.HOWeights[j][k] * hiddenFNets[j])
-            outputFNets[k] = self.getActivationFunctionValue(outputNet, "sig")
+            outputFNets.append(self.getActivationFunctionValue(outputNet, "sig"))
 
-        return  snc.__init__(hiddenFNets, outputFNets)
+        return snc(hiddenFNets, outputFNets)
 
     def getActivationFunctionValue(self,inp, func):
-        result = 0.0
-
         if(func == "lin"):
             return inp
         else:

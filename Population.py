@@ -2,6 +2,7 @@ from Chromosone import Chromosone as c
 import numpy as np
 import operator
 import random as r
+import math
 
 class Population:
     def __init__(self, pop):
@@ -11,10 +12,9 @@ class Population:
         self.mutationWeight = 0.4
         self.curChromosone = 0
         self.hallOfFameSize = 4
-        tournamentSize = 3
 
         for i in range(self.populationSize):
-            self.chromosones.append(c.__init__(True))
+            self.chromosones.append(c(True))
 
     def comp(greater_than):
         def compare(x, y):
@@ -34,19 +34,19 @@ class Population:
         for i in range(self.hallOfFameSize):
             nextGen.append(sorted_chromosomes.pop())
 
-        for i in range(self.populationSize-self.hallOfFameSize):
-            for j in range((self.populationSize-self.hallOfFameSize)/2):
-                crossoverChromosone = crossover(nextGen.index(j%self.hallOfFameSize),
-                                                nextGen.index(i%self.hallOfFameSize))
-                mutateChromosone = mutate(crossoverChromosone)
+        for i in range(int(self.populationSize-self.hallOfFameSize)):
+            for j in range(math.ceil((self.populationSize-self.hallOfFameSize)/2)):
+                crossoverChromosone = self.crossover(nextGen[j%self.hallOfFameSize],
+                                                nextGen[i%self.hallOfFameSize])
+                mutateChromosone = self.mutate(crossoverChromosone)
                 nextGen.append(mutateChromosone)
 
         self.chromosones = nextGen
 
     def crossover(self, c1, c2):
-        output = c.__init__()
-        outputIHWeights = np.zeros(c.noInputs,c.noHidden)
-        outputHOWeights = np.zeros(c.noHidden,c.noOutput)
+        output = c(True)
+        outputIHWeights = np.zeros((c.noInputs,c.noHidden))
+        outputHOWeights = np.zeros((c.noHidden,c.noOutput))
 
         #crossover weights for input to hidden
         for i in range(c.noInputs):
@@ -77,9 +77,9 @@ class Population:
             for j in range(c.noHidden):
                 if(r.randint(0, self.populationSize)% self.mutationRate == 0):
                     if(r.randint(1,4) % 2 == 0):
-                        mutateWeight = cChromosone.IHWeights[i][j]+ r.random * r.randint(0,self.mutationRate)
+                        mutateWeight = cChromosone.IHWeights[i][j]+ r.random() * r.randint(0,self.mutationRate)
                     else:
-                        mutateWeight = cChromosone.IHWeights[i][j] + r.random * r.randint(0,self.mutationRate)
+                        mutateWeight = cChromosone.IHWeights[i][j] + r.random() * r.randint(0,self.mutationRate)
 
                 cChromosone.IHWeights[i][j] = mutateWeight
 
@@ -87,9 +87,9 @@ class Population:
             for j in range(c.noOutput):
                 if (r.randint(0, self.populationSize) % self.mutationRate == 0):
                     if (r.randint(1, 4) % 2 == 0):
-                        mutateWeight = cChromosone.HOWeights[i][j] + r.random * r.randint(0, self.mutationRate)
+                        mutateWeight = cChromosone.HOWeights[i][j] + r.random() * r.randint(0, self.mutationRate)
                     else:
-                        mutateWeight = cChromosone.HOWeights[i][j] + r.random * r.randint(0, self.mutationRate)
+                        mutateWeight = cChromosone.HOWeights[i][j] + r.random() * r.randint(0, self.mutationRate)
 
                 cChromosone.HOWeights[i][j] = mutateWeight
 
@@ -102,6 +102,6 @@ class Population:
             self.curChromosone=0
 
     def getCurChromosone(self):
-        return self.chromosones.index(self.curChromosone)
+        return self.chromosones[self.curChromosone]
 
     #implement save here

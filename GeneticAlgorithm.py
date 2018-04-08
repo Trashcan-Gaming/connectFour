@@ -15,28 +15,5 @@ player2 = 1
 
 board = np.ones((row,column))
 
-def getStateForNN(board, turn, player,row, column):
-    output = []
 
-    for r in range(row):
-        for c in range(column):
-            if board[r][c] == 1:
-                output.append(1)
-            else:
-                output.append(0)
-    for r in range(row):
-        for c in range(column):
-            if board[r][c] == 2:
-                output.append(1)
-            else:
-                output.append(0)
-
-    # If it is MAX's turn
-    if turn == player:
-        output.append(1)
-    # If it is MIN's turn
-    else:
-        output.append(0)
-
-    return output
 
