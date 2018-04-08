@@ -94,6 +94,9 @@ def checkWin(board, turn):
             if (board[r][c+3] == player and board[r + 1][c + 2] == player and board[r + 2][c + 1] == player and board[r + 3][c] == player):
                 return True
 
+def checkDraw(board):
+    return board.all()
+
 def draw_board(board):
     for c in range(COLUMN_COUNT):
         for r in range(ROW_COUNT):
@@ -185,6 +188,13 @@ while not game_over:
                     pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
                     pygame.display.update()
                     label = myfont.render("Player 2 wins!", 1, YELLOW)
+                    screen.blit(label, (40,10))
+                    game_over = True
+
+                if checkDraw(board):
+                    pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+                    pygame.display.update()
+                    label = myfont.render("It's a draw", 1, RED)
                     screen.blit(label, (40,10))
                     game_over = True
 
