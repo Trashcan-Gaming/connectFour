@@ -1,14 +1,32 @@
+import pygame
+from tkinter import mainloop, Button, Tk
+
 from ConnectFourTraining import ConnectFourTraining as CT
 from NeuralNetwork import NeuralNetwork as NN
 from Population import Population
 import numpy as np
 
-pop1 = Population(20)
-pop2 = Population(20)
+pop1 = Population(50)
+pop2 = Population(50)
 
 curChromosone1 = 0
 curChromosone2 = 0
 iterationCounter = 0
+
+def saveState(pop1,pop2):
+    sortedPop1 = pop1.getSortedChromosones()
+    sortedPop2 = pop2.getSortedChromosones()
+
+    np.save("chr1_IH1", sortedPop1[0].IHWeights )
+    np.save("chr1_HO1", sortedPop1[0].HOWeights )
+    np.save("chr1_IH2", sortedPop1[1].IHWeights )
+    np.save("chr1_HO2", sortedPop1[1].HOWeights )
+
+    np.save("chr2_IH1", sortedPop2[0].IHWeights)
+    np.save("chr2_HO1", sortedPop2[0].HOWeights)
+    np.save("chr2_IH2", sortedPop2[1].IHWeights)
+    np.save("chr2_HO2", sortedPop2[1].HOWeights)
+
 
 while True:
     curChromosone1 = pop1.chromosones[pop1.curChromosone]
@@ -27,6 +45,8 @@ while True:
             print(score2)
             game.print_board(game.board)
 
+        if(iterationCounter % 1000 == 0 ):
+            saveState(pop1, pop2)
 
         NN1.setWeightsOfNN(curChromosone1.IHWeights, curChromosone1.HOWeights)
         NN2.setWeightsOfNN(curChromosone2.IHWeights, curChromosone2.HOWeights)

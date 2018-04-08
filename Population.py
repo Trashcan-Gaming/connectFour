@@ -9,12 +9,15 @@ class Population:
         self.populationSize = pop
         self.chromosones = []
         self.mutationRate = 2
-        self.mutationWeight = 0.4
+        self.mutationWeight = 0.5
         self.curChromosone = 0
         self.hallOfFameSize = 4
 
         for i in range(self.populationSize):
             self.chromosones.append(c(True))
+
+    def getSortedChromosones(self):
+        return sorted(self.chromosones, key=operator.attrgetter('fitness'))
 
     def comp(greater_than):
         def compare(x, y):
@@ -79,7 +82,7 @@ class Population:
                     if(r.randint(1,4) % 2 == 0):
                         mutateWeight = cChromosone.IHWeights[i][j]+ r.random() * r.randint(0,self.mutationRate)
                     else:
-                        mutateWeight = cChromosone.IHWeights[i][j] + r.random() * r.randint(0,self.mutationRate)
+                        mutateWeight = cChromosone.IHWeights[i][j] + r.random() * (-r.randint(0,self.mutationRate))
 
                 cChromosone.IHWeights[i][j] = mutateWeight
 
@@ -89,7 +92,7 @@ class Population:
                     if (r.randint(1, 4) % 2 == 0):
                         mutateWeight = cChromosone.HOWeights[i][j] + r.random() * r.randint(0, self.mutationRate)
                     else:
-                        mutateWeight = cChromosone.HOWeights[i][j] + r.random() * r.randint(0, self.mutationRate)
+                        mutateWeight = cChromosone.HOWeights[i][j] + r.random() * (-r.randint(0, self.mutationRate))
 
                 cChromosone.HOWeights[i][j] = mutateWeight
 
