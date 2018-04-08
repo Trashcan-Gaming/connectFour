@@ -130,12 +130,19 @@ YELLOW = (255, 255, 0)
 # Initialise game
 pygame.init()
 
+
+
 # Draw board
 SQUARESIZE = 100
 RADIUS = int(SQUARESIZE/2 - 5)
 width = COLUMN_COUNT * SQUARESIZE
 height = (ROW_COUNT+1) * SQUARESIZE
 size = (width, height)
+
+#Initialise placer
+posx = width/2
+speed = 100
+
 screen = pygame.display.set_mode(size)
 draw_board(board)
 pygame.display.update()
@@ -146,61 +153,71 @@ while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+        pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a and posx >50:
+                posx -= speed
+                if turn == player1:
+                    pygame.draw.circle(screen, RED, (int(posx), int(SQUARESIZE/2)), RADIUS)
+                else:
+                    pygame.draw.circle(screen, YELLOW, (int(posx), int(SQUARESIZE/2)), RADIUS)
+                pygame.display.update()
 
-        if event.type == pygame.MOUSEMOTION:
-            pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
-            posx = event.pos[0]
-            if turn == player1:
-                pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
-            else:
-                pygame.draw.circle(screen, YELLOW, (posx, int(SQUARESIZE/2)), RADIUS)
-            pygame.display.update()
+            if event.key == pygame.K_d and posx <width - 50:
+                posx += speed
+                if turn == player1:
+                    pygame.draw.circle(screen, RED, (int(posx), int(SQUARESIZE/2)), RADIUS)
+                else:
+                    pygame.draw.circle(screen, YELLOW, (int(posx), int(SQUARESIZE/2)), RADIUS)
+                pygame.display.update()
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Get player 1 input
-            if turn == player1:
-                posx = event.pos[0]
-                col = int(math.floor(posx/SQUARESIZE))
 
-                if isValidLocation(board, col):
-                    makeMove(board, col, turn)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                # Get player 1 input
+                if turn == player1:
+                    #posx = event.pos[0]
+                    col = int(math.floor(posx/SQUARESIZE))
 
-                if checkWin(board, 1):
-                    pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
-                    pygame.display.update()
-                    label = myfont.render("Player 1 wins!", 1, RED)
-                    screen.blit(label, (40,10))
-                    game_over = True
+                    if isValidLocation(board, col):
+                        makeMove(board, col, turn)
 
-                printBoard(board)
-                draw_board(board)
-                turn = player2
+                    if checkWin(board, 1):
+                        pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+                        pygame.display.update()
+                        label = myfont.render("Player 1 wins!", 1, RED)
+                        screen.blit(label, (40,10))
+                        game_over = True
+
+                    printBoard(board)
+                    draw_board(board)
+                    turn = player2
 
             # Get player 2 input
-            else:
-                posx = event.pos[0]
-                col = int(math.floor(posx/SQUARESIZE))
+                else:
+                    #posx = event.pos[0]
+                    col = int(math.floor(posx/SQUARESIZE))
 
-                if isValidLocation(board, col):
-                    makeMove(board, col, turn)
+                    if isValidLocation(board, col):
+                        makeMove(board, col, turn)
 
-                if checkWin(board, 2):
-                    pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
-                    pygame.display.update()
-                    label = myfont.render("Player 2 wins!", 1, YELLOW)
-                    screen.blit(label, (40,10))
-                    game_over = True
+                    if checkWin(board, 2):
+                        pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+                        pygame.display.update()
+                        label = myfont.render("Player 2 wins!", 1, YELLOW)
+                        screen.blit(label, (40,10))
+                        game_over = True
 
-                if checkDraw(board):
-                    pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
-                    pygame.display.update()
-                    label = myfont.render("It's a draw", 1, RED)
-                    screen.blit(label, (40,10))
-                    game_over = True
+                    if checkDraw(board):
+                        pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+                        pygame.display.update()
+                        label = myfont.render("It's a draw", 1, RED)
+                        screen.blit(label, (40,10))
+                        game_over = True
 
-                printBoard(board)
-                draw_board(board)
-                turn = player1
+                    printBoard(board)
+                    draw_board(board)
+                    turn = player1
 
             if game_over:
                 pygame.time.wait(3000)
